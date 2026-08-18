@@ -151,12 +151,16 @@ namespace CopilotCompanion.ToolWindows
                 "CopilotCompanion", "WebView2");
             var environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder);
 
+            // The control must be in the visual tree BEFORE EnsureCoreWebView2Async:
+            // the WPF WebView2 only creates its HWND once loaded, and the task never
+            // completes without one (this froze the tool window on Windows).
             _webView = new WebView2();
-            await _webView.EnsureCoreWebView2Async(environment);
-            _webView.CoreWebView2.NavigationCompleted += OnNavigationCompleted;
-
             Children.Clear();
             Children.Add(_webView);
+            await _webView.EnsureCoreWebView2Async(environment);
+            _package.Logger?.Log("WebView2 ready (runtime " + environment.BrowserVersionString + "); loading " + _url);
+
+            _webView.CoreWebView2.NavigationCompleted += OnNavigationCompleted;
             _webView.Source = new Uri(_url);
         }
 
