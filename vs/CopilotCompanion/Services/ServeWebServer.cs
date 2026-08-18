@@ -22,8 +22,13 @@ namespace CopilotCompanion.Services
         private readonly object _gate = new object();
         private Process _process;
 
-        public static string ProjectUrl(string workspaceRoot) =>
-            $"http://{Host}:{Port}/?folder={Uri.EscapeDataString(workspaceRoot)}";
+        public static string ProjectUrl(string workspaceRoot)
+        {
+            // The web workbench expects forward slashes; backslashes arrive as %5C and
+            // fail to resolve ("Unable to resolve resource C:%5CUsers%5C...").
+            string normalized = workspaceRoot.Replace('\\', '/').TrimEnd('/');
+            return $"http://{Host}:{Port}/?folder={Uri.EscapeDataString(normalized)}";
+        }
 
         /// <summary>
         /// Ensures the server is running. Returns null on success, or a user-facing
