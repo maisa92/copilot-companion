@@ -64,6 +64,8 @@ jobs:
         with:
           ref: main
           path: repo
+          # Deploy key: lets this push bypass the protect-main ruleset.
+          ssh-key: ${{ secrets.CI_DEPLOY_KEY }}
       - name: Update custom plugin repository (updatePlugins.xml)
         working-directory: repo
         run: |
