@@ -129,6 +129,19 @@ class CompanionToolWindowFactory : ToolWindowFactory, DumbAware {
         // language=JavaScript
         val CHAT_ONLY_JS = """
             (() => {
+
+                // Auto-accept the workspace-trust dialog: the folder is the same
+                // solution the user already opened in the host IDE.
+                let trustTries = 0;
+                const trustTimer = setInterval(() => {
+                    trustTries++;
+                    if (trustTries > 240) { clearInterval(trustTimer); return; }
+                    const dlg = document.querySelector('.monaco-dialog-box');
+                    if (!dlg || !/trust/i.test(dlg.textContent || '')) return;
+                    const yes = Array.from(dlg.querySelectorAll('.monaco-button'))
+                        .find(b => /yes.*trust/i.test((b.textContent || '').trim()));
+                    if (yes) { yes.click(); clearInterval(trustTimer); }
+                }, 500);
                 let tries = 0;
                 const timer = setInterval(() => {
                     tries++;
