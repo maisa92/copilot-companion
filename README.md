@@ -137,3 +137,7 @@ Install the ZIP from `build/distributions/` via
 > unlike Visual Studio.
 
 See [`rider/README.md`](rider/README.md) for details.
+
+## License
+
+[MIT](LICENSE) — free to use, modify, and distribute.
