@@ -30,7 +30,16 @@ object VsCodeCli {
         }
 
         // PathEnvironmentVariableUtil honors PATHEXT on Windows, so this finds code.cmd too.
-        PathEnvironmentVariableUtil.findInPath("code")?.let { return it.absolutePath }
+        PathEnvironmentVariableUtil.findInPath("code")?.let { found ->
+            // VS Code's bin folder also ships an extension-less "code" POSIX shell script;
+            // if the PATH lookup lands on that under Windows, Windows cannot execute it
+            // (CreateProcess error=193) — use the sibling code.cmd instead.
+            if (SystemInfo.isWindows && !found.name.contains('.')) {
+                val cmd = File(found.parentFile, "code.cmd")
+                if (cmd.isFile) return cmd.absolutePath
+            }
+            return found.absolutePath
+        }
 
         if (SystemInfo.isWindows) {
             val localAppData = System.getenv("LOCALAPPDATA") ?: return null
