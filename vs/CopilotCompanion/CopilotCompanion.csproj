@@ -118,12 +118,12 @@
          native loader must stay under runtimes\win-<arch>\native, where the managed
          assembly probes for it. The WebView2 *runtime* itself ships with Windows 11 /
          Edge and is present on any machine with VS 2022+. -->
-    <Content Include="$(PkgMicrosoft_Web_WebView2)\lib\net462\Microsoft.Web.WebView2.Core.dll" Condition="'$(PkgMicrosoft_Web_WebView2)' != ''">
+    <Content Include="$(PkgMicrosoft_Web_WebView2)\lib\net45\Microsoft.Web.WebView2.Core.dll" Condition="'$(PkgMicrosoft_Web_WebView2)' != ''">
       <Link>Microsoft.Web.WebView2.Core.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(PkgMicrosoft_Web_WebView2)\lib\net462\Microsoft.Web.WebView2.Wpf.dll" Condition="'$(PkgMicrosoft_Web_WebView2)' != ''">
+    <Content Include="$(PkgMicrosoft_Web_WebView2)\lib\net45\Microsoft.Web.WebView2.Wpf.dll" Condition="'$(PkgMicrosoft_Web_WebView2)' != ''">
       <Link>Microsoft.Web.WebView2.Wpf.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
