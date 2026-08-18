@@ -23,6 +23,7 @@ try {
         $zipPath = Join-Path $tmp 'copilot-companion.zip'
         Write-Host 'Downloading the Rider plugin...'
         Invoke-WebRequest $zipUrl -OutFile $zipPath
+        $repoUrl = "https://raw.githubusercontent.com/$repo/main/updatePlugins.xml"
         foreach ($riderDir in $riderDirs) {
             $plugins = Join-Path $riderDir.FullName 'plugins'
             New-Item -ItemType Directory -Path $plugins -Force | Out-Null
@@ -30,6 +31,32 @@ try {
             if (Test-Path $target) { Remove-Item $target -Recurse -Force }
             Expand-Archive -Path $zipPath -DestinationPath $plugins -Force
             Write-Host "Rider plugin installed into $plugins"
+
+            # Register the custom plugin repository so Rider offers updates automatically.
+            try {
+                $optionsDir = Join-Path $riderDir.FullName 'options'
+                New-Item -ItemType Directory -Path $optionsDir -Force | Out-Null
+                $updatesPath = Join-Path $optionsDir 'updates.xml'
+                if (Test-Path $updatesPath) { [xml]$doc = Get-Content $updatesPath } else { [xml]$doc = '<application/>' }
+                $comp = $doc.application.SelectSingleNode("component[@name='UpdatesConfigurable']")
+                if (-not $comp) {
+                    $comp = $doc.CreateElement('component'); $comp.SetAttribute('name','UpdatesConfigurable')
+                    $doc.DocumentElement.AppendChild($comp) | Out-Null
+                }
+                $hosts = $comp.SelectSingleNode("option[@name='pluginHosts']")
+                if (-not $hosts) {
+                    $hosts = $doc.CreateElement('option'); $hosts.SetAttribute('name','pluginHosts')
+                    $comp.AppendChild($hosts) | Out-Null
+                }
+                if (-not $hosts.SelectSingleNode("option[@value='$repoUrl']")) {
+                    $entry = $doc.CreateElement('option'); $entry.SetAttribute('value',$repoUrl)
+                    $hosts.AppendChild($entry) | Out-Null
+                    $doc.Save($updatesPath)
+                    Write-Host 'Registered the update repository (automatic updates enabled).'
+                }
+            } catch {
+                Write-Host "Could not register the update repository automatically - add $repoUrl under Settings | Plugins | Manage Plugin Repositories."
+            }
         }
         Write-Host 'Restart Rider to finish.'
     } else {
