@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <Extern href="stdidcmd.h" />
+  <Extern href="vsshlids.h" />
+  <Include href="KnownImageIds.vsct" />
+
+  <Commands package="guidCopilotCompanionPackage">
+    <Menus>
+      <Menu guid="guidCopilotCompanionCmdSet" id="CopilotCompanionToolbar" type="Toolbar">
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Copilot Companion</ButtonText>
+        </Strings>
+      </Menu>
+    </Menus>
+
+    <Groups>
+      <Group guid="guidCopilotCompanionCmdSet" id="ToolsMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
+      </Group>
+      <Group guid="guidCopilotCompanionCmdSet" id="ToolbarGroup" priority="0x0000">
+        <Parent guid="guidCopilotCompanionCmdSet" id="CopilotCompanionToolbar" />
+      </Group>
+    </Groups>
+
+    <Buttons>
+      <Button guid="guidCopilotCompanionCmdSet" id="cmdidOpenCompanion" priority="0x0100" type="Button">
+        <Parent guid="guidCopilotCompanionCmdSet" id="ToolsMenuGroup" />
+        <Icon guid="ImageCatalogGuid" id="OpenFolder" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Open Copilot Companion</ButtonText>
+          <ToolTipText>Open VS Code with Copilot Chat next to Visual Studio</ToolTipText>
+        </Strings>
+      </Button>
+      <Button guid="guidCopilotCompanionCmdSet" id="cmdidOpenCompanionToolWindow" priority="0x0103" type="Button">
+        <Parent guid="guidCopilotCompanionCmdSet" id="ToolsMenuGroup" />
+        <Icon guid="ImageCatalogGuid" id="Comment" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Open Companion Chat (Docked)</ButtonText>
+          <ToolTipText>Embed VS Code Copilot Chat in a docked tool window</ToolTipText>
+        </Strings>
+      </Button>
+      <Button guid="guidCopilotCompanionCmdSet" id="cmdidRestoreLayout" priority="0x0101" type="Button">
+        <Parent guid="guidCopilotCompanionCmdSet" id="ToolsMenuGroup" />
+        <Icon guid="ImageCatalogGuid" id="Refresh" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Restore Layout</ButtonText>
+          <ToolTipText>Maximize Visual Studio and minimize the companion VS Code window</ToolTipText>
+        </Strings>
+      </Button>
+      <Button guid="guidCopilotCompanionCmdSet" id="cmdidToggleFileSync" priority="0x0102" type="Button">
+        <Parent guid="guidCopilotCompanionCmdSet" id="ToolsMenuGroup" />
+        <Icon guid="ImageCatalogGuid" id="Sync" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Sync Active File with Companion</ButtonText>
+          <ToolTipText>Follow the active Visual Studio document in the companion VS Code window</ToolTipText>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+
+  <CommandPlacements>
+    <CommandPlacement guid="guidCopilotCompanionCmdSet" id="cmdidOpenCompanion" priority="0x0100">
+      <Parent guid="guidCopilotCompanionCmdSet" id="ToolbarGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidCopilotCompanionCmdSet" id="cmdidRestoreLayout" priority="0x0101">
+      <Parent guid="guidCopilotCompanionCmdSet" id="ToolbarGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidCopilotCompanionCmdSet" id="cmdidToggleFileSync" priority="0x0102">
+      <Parent guid="guidCopilotCompanionCmdSet" id="ToolbarGroup" />
+    </CommandPlacement>
+  </CommandPlacements>
+
+  <KeyBindings>
+    <KeyBinding guid="guidCopilotCompanionCmdSet" id="cmdidOpenCompanion" editor="guidVSStd97" key1="C" mod1="Control Shift Alt" />
+    <KeyBinding guid="guidCopilotCompanionCmdSet" id="cmdidRestoreLayout" editor="guidVSStd97" key1="R" mod1="Control Shift Alt" />
+    <KeyBinding guid="guidCopilotCompanionCmdSet" id="cmdidOpenCompanionToolWindow" editor="guidVSStd97" key1="D" mod1="Control Shift Alt" />
+  </KeyBindings>
+
+  <Symbols>
+    <GuidSymbol name="guidCopilotCompanionPackage" value="{b7a2c0e4-6d5a-4e8b-9f1c-3d2e8a7b4c01}" />
+    <GuidSymbol name="guidCopilotCompanionCmdSet" value="{d4f8e2a1-9c3b-4761-8e5d-0a6b9c2f7e12}">
+      <IDSymbol name="CopilotCompanionToolbar" value="0x1000" />
+      <IDSymbol name="ToolsMenuGroup" value="0x1020" />
+      <IDSymbol name="ToolbarGroup" value="0x1050" />
+      <IDSymbol name="cmdidOpenCompanion" value="0x0100" />
+      <IDSymbol name="cmdidRestoreLayout" value="0x0101" />
+      <IDSymbol name="cmdidToggleFileSync" value="0x0102" />
+      <IDSymbol name="cmdidOpenCompanionToolWindow" value="0x0103" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">17.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6E2C8A4F-1B7D-4E30-9C5A-8F4D2B6A1E90}</ProjectGuid>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CopilotCompanion</RootNamespace>
+    <AssemblyName>CopilotCompanion</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>latest</LangVersion>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <UseCodebase>true</UseCodebase>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+    <StartAction>Program</StartAction>
+    <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Commands\OpenCompanionCommand.cs" />
+    <Compile Include="Commands\OpenCompanionToolWindowCommand.cs" />
+    <Compile Include="Services\ServeWebServer.cs" />
+    <Compile Include="ToolWindows\CompanionToolWindow.cs" />
+    <Compile Include="ToolWindows\CompanionToolWindowControl.cs" />
+    <Compile Include="Commands\RestoreLayoutCommand.cs" />
+    <Compile Include="Commands\ToggleFileSyncCommand.cs" />
+    <Compile Include="CopilotCompanionPackage.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="Options\CompanionOptionsPage.cs" />
+    <Compile Include="PackageGuids.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CompanionSession.cs" />
+    <Compile Include="Services\FileSyncService.cs" />
+    <Compile Include="Services\OutputPaneLogger.cs" />
+    <Compile Include="Services\SettingsJsonMerger.cs" />
+    <Compile Include="Services\VsCodeCli.cs" />
+    <Compile Include="Services\WindowArranger.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <VSCTCompile Include="CopilotCompanionPackage.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+    </VSCTCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <ManifestResourceName>VSPackage</ManifestResourceName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.9.37000">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.9.3168">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" GeneratePathProperty="true" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- VS ships Newtonsoft.Json, but bundling our own copy keeps us independent of the
+         version installed with any given 17.x build. -->
+    <Content Include="$(PkgNewtonsoft_Json)\lib\net45\Newtonsoft.Json.dll" Condition="'$(PkgNewtonsoft_Json)' != ''">
+      <Link>Newtonsoft.Json.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <!-- WebView2 for the docked tool window. Managed wrappers at the VSIX root; the
+         native loader must stay under runtimes\win-<arch>\native, where the managed
+         assembly probes for it. The WebView2 *runtime* itself ships with Windows 11 /
+         Edge and is present on any machine with VS 2022+. -->
+    <Content Include="$(PkgMicrosoft_Web_WebView2)\lib\net462\Microsoft.Web.WebView2.Core.dll" Condition="'$(PkgMicrosoft_Web_WebView2)' != ''">
+      <Link>Microsoft.Web.WebView2.Core.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgMicrosoft_Web_WebView2)\lib\net462\Microsoft.Web.WebView2.Wpf.dll" Condition="'$(PkgMicrosoft_Web_WebView2)' != ''">
+      <Link>Microsoft.Web.WebView2.Wpf.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgMicrosoft_Web_WebView2)\runtimes\win-x64\native\WebView2Loader.dll" Condition="'$(PkgMicrosoft_Web_WebView2)' != ''">
+      <Link>runtimes\win-x64\native\WebView2Loader.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgMicrosoft_Web_WebView2)\runtimes\win-arm64\native\WebView2Loader.dll" Condition="'$(PkgMicrosoft_Web_WebView2)' != ''">
+      <Link>runtimes\win-arm64\native\WebView2Loader.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="Exists('$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets')" />
+</Project>

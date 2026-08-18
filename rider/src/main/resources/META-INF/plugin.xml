@@ -1,0 +1,64 @@
+<idea-plugin>
+    <id>com.copilotcompanion.rider</id>
+    <name>Copilot Companion</name>
+    <vendor>CopilotCompanion</vendor>
+
+    <description><![CDATA[
+        Launches VS Code as a side-by-side AI companion window (with GitHub Copilot Chat)
+        for the currently open solution. Arranges VS Code on the left and Rider on the
+        right, and mirrors the active file and caret line into the companion window.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.rider</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- CompanionSettings and CompanionSessionService are registered via the
+             @Service annotation (light services); only non-service extensions go here. -->
+        <applicationConfigurable
+            parentId="tools"
+            id="com.copilotcompanion.rider.settings.CompanionConfigurable"
+            instance="com.copilotcompanion.rider.settings.CompanionConfigurable"
+            displayName="Copilot Companion"/>
+
+        <notificationGroup id="Copilot Companion" displayType="BALLOON"/>
+
+        <!-- Embedded mode: VS Code web UI (code serve-web) in a JCEF browser inside Rider,
+             for full-screen users where a separate window would be hidden. -->
+        <toolWindow id="Copilot Companion"
+                    anchor="right"
+                    icon="AllIcons.Toolwindows.WebToolWindow"
+                    factoryClass="com.copilotcompanion.rider.toolwindow.CompanionToolWindowFactory"/>
+    </extensions>
+
+    <projectListeners>
+        <listener
+            class="com.copilotcompanion.rider.sync.FileSyncListener"
+            topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+    </projectListeners>
+
+    <actions>
+        <group id="CopilotCompanion.Group" text="Copilot Companion" popup="false">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+
+            <action id="CopilotCompanion.Open"
+                    class="com.copilotcompanion.rider.actions.OpenCopilotCompanionAction"
+                    text="Open Copilot Companion"
+                    description="Launch VS Code with Copilot Chat side-by-side with Rider">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt C"/>
+            </action>
+
+            <action id="CopilotCompanion.RestoreLayout"
+                    class="com.copilotcompanion.rider.actions.RestoreLayoutAction"
+                    text="Restore Layout"
+                    description="Maximize Rider and minimize the companion VS Code window">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt R"/>
+            </action>
+
+            <action id="CopilotCompanion.ToggleFileSync"
+                    class="com.copilotcompanion.rider.actions.ToggleFileSyncAction"
+                    text="Toggle Copilot File Sync"
+                    description="Mirror the active file and caret line into the companion window"/>
+        </group>
+    </actions>
+</idea-plugin>

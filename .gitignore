@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Rider / Gradle
+rider/.gradle/
+rider/build/
+rider/.intellijPlatform/
+rider/.idea/
+
+# Visual Studio
+vs/**/bin/
+vs/**/obj/
+vs/.vs/
+vs/**/*.user
