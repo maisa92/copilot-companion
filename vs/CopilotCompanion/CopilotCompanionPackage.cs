@@ -16,7 +16,7 @@ namespace CopilotCompanion
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration("Copilot Companion", "Launches VS Code with GitHub Copilot Chat as a side-by-side or docked companion for the current solution.", "1.5")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideOptionsPage(typeof(CompanionOptionsPage), "Copilot Companion", "General", 0, 0, true)]
+    [ProvideOptionPage(typeof(CompanionOptionsPage), "Copilot Companion", "General", 0, 0, true)]
     [ProvideToolWindow(typeof(ToolWindows.CompanionToolWindow),
         Style = VsDockStyle.Tabbed,
         Orientation = ToolWindowOrientation.Right,
