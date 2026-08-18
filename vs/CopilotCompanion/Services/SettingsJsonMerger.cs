@@ -30,7 +30,9 @@ namespace CopilotCompanion.Services
             // side bar maximized so the companion reads as a chat panel, not a full IDE.
             settings["workbench.secondarySideBar.defaultVisibility"] = "maximized";
             settings["workbench.startupEditor"] = "none";
-            settings["workbench.colorTheme"] = "Default Dark Modern";
+            // Built-in theme with the classic Visual Studio dark palette (#1E1E1E),
+            // so the embedded panel blends into the VS 2022/2026 Dark theme.
+            settings["workbench.colorTheme"] = "Visual Studio Dark";
             // Fresh VS Code installs auto-detect the OS color scheme, which overrides
             // workbench.colorTheme entirely — turn it off so dark mode always wins.
             settings["window.autoDetectColorScheme"] = false;
