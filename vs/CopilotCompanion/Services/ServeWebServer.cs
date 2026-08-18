@@ -24,9 +24,16 @@ namespace CopilotCompanion.Services
 
         public static string ProjectUrl(string workspaceRoot)
         {
-            // The web workbench expects forward slashes; backslashes arrive as %5C and
-            // fail to resolve ("Unable to resolve resource C:%5CUsers%5C...").
+            // The web workbench only treats the folder value as a server path when it
+            // starts with '/'; anything else goes through URI.parse, which misreads
+            // "C:/Users/..." as a URI with scheme "C". So: forward slashes, no trailing
+            // separator, and a leading '/' in front of the drive letter.
             string normalized = workspaceRoot.Replace('\\', '/').TrimEnd('/');
+            if (!normalized.StartsWith("/", StringComparison.Ordinal))
+            {
+                normalized = "/" + normalized;
+            }
+
             return $"http://{Host}:{Port}/?folder={Uri.EscapeDataString(normalized)}";
         }
 
