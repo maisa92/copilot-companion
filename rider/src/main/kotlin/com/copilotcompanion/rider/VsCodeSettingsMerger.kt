@@ -26,6 +26,9 @@ object VsCodeSettingsMerger {
         "workbench.secondarySideBar.defaultVisibility" to "maximized",
         "workbench.startupEditor" to "none",
         "workbench.colorTheme" to "Default Dark Modern",
+        // Fresh VS Code installs auto-detect the OS color scheme, which overrides
+        // workbench.colorTheme entirely — turn it off so dark mode always wins.
+        "window.autoDetectColorScheme" to false,
     )
 
     /**

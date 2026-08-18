@@ -31,6 +31,9 @@ namespace CopilotCompanion.Services
             settings["workbench.secondarySideBar.defaultVisibility"] = "maximized";
             settings["workbench.startupEditor"] = "none";
             settings["workbench.colorTheme"] = "Default Dark Modern";
+            // Fresh VS Code installs auto-detect the OS color scheme, which overrides
+            // workbench.colorTheme entirely — turn it off so dark mode always wins.
+            settings["window.autoDetectColorScheme"] = false;
 
             Directory.CreateDirectory(vscodeDir);
             File.WriteAllText(settingsPath, settings.ToString(Formatting.Indented));
