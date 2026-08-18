@@ -149,7 +149,14 @@ namespace CopilotCompanion.ToolWindows
             string userDataFolder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "CopilotCompanion", "WebView2");
-            var environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder);
+            // AllowSingleSignOnUsingOSPrimaryAccount lets Entra ID sign-ins inside the
+            // embedded browser use the Windows work account (device PRT), so corporate
+            // Conditional Access "compliant device" policies (AADSTS53000) can pass.
+            var envOptions = new CoreWebView2EnvironmentOptions
+            {
+                AllowSingleSignOnUsingOSPrimaryAccount = true,
+            };
+            var environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder, envOptions);
 
             // The control must be in the visual tree BEFORE EnsureCoreWebView2Async:
             // the WPF WebView2 only creates its HWND once loaded, and the task never
