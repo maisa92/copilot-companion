@@ -29,13 +29,14 @@ namespace CopilotCompanion.Services
         /// Ensures the server is running. Returns null on success, or a user-facing
         /// error message on failure.
         /// </summary>
-        public async Task<string> EnsureStartedAsync(string customCliPath, CancellationToken cancellationToken)
+        public async Task<string> EnsureStartedAsync(string customCliPath, CancellationToken cancellationToken, Action<string> status = null)
         {
             if (await IsUpAsync().ConfigureAwait(false))
             {
                 return null;
             }
 
+            status?.Invoke("Locating the VS Code CLI…");
             string cli = VsCodeCli.Resolve(customCliPath);
             if (cli == null)
             {
@@ -49,6 +50,7 @@ namespace CopilotCompanion.Services
                        "Point the setting at bin\\code.cmd instead (or clear it to auto-detect).";
             }
 
+            status?.Invoke("Starting the VS Code web server…");
             lock (_gate)
             {
                 if (_process == null || _process.HasExited)
@@ -60,6 +62,7 @@ namespace CopilotCompanion.Services
             }
 
             // The first launch may download the VS Code server bundle — allow up to 90 s.
+            status?.Invoke("Waiting for the VS Code web server — the first launch downloads the VS Code server bundle, this can take a minute or two…");
             DateTime deadline = DateTime.UtcNow.AddSeconds(90);
             while (DateTime.UtcNow < deadline)
             {

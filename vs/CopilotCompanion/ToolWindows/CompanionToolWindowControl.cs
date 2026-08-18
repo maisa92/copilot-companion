@@ -82,6 +82,13 @@ namespace CopilotCompanion.ToolWindows
 
         public void Start(CopilotCompanionPackage package)
         {
+            if (package == null)
+            {
+                // Tool window restored before the package finished initializing.
+                _status.Text = "Copilot Companion is still initializing - close and reopen this window.";
+                return;
+            }
+
             _package = package;
             package.JoinableTaskFactory.RunAsync(async () =>
             {
@@ -102,6 +109,7 @@ namespace CopilotCompanion.ToolWindows
 
         private async Task RunAsync()
         {
+            await SetStatusAsync("Waiting for the solution to load…");
             string workspaceRoot = await WaitForWorkspaceRootAsync();
             if (workspaceRoot == null)
             {
@@ -123,13 +131,17 @@ namespace CopilotCompanion.ToolWindows
                 _package.Logger?.LogError("Merging .vscode/settings.json failed; leaving the file untouched", ex);
             }
 
-            string error = await _package.ServeWeb.EnsureStartedAsync(customCliPath, _package.DisposalToken);
+            string error = await _package.ServeWeb.EnsureStartedAsync(
+                customCliPath,
+                _package.DisposalToken,
+                message => _package.JoinableTaskFactory.RunAsync(() => SetStatusAsync(message)).FileAndForget("CopilotCompanion/toolwindow-status"));
             if (error != null)
             {
                 await SetStatusAsync(error);
                 return;
             }
 
+            await SetStatusAsync("Opening the embedded VS Code…");
             _url = ServeWebServer.ProjectUrl(workspaceRoot);
 
             await _package.JoinableTaskFactory.SwitchToMainThreadAsync(_package.DisposalToken);
@@ -222,10 +234,14 @@ namespace CopilotCompanion.ToolWindows
 
         private async Task SetStatusAsync(string message)
         {
+            _package.Logger?.Log("Tool window: " + message.Replace("\u2026", "..."));
             await _package.JoinableTaskFactory.SwitchToMainThreadAsync(_package.DisposalToken);
-            Children.Clear();
+            if (!Children.Contains(_status))
+            {
+                Children.Clear();
+                Children.Add(_status);
+            }
             _status.Text = message;
-            Children.Add(_status);
         }
     }
 }
