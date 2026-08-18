@@ -12,6 +12,35 @@ Two extensions, one behavior:
 
 ## Install (download, no build needed)
 
+### One-line install
+
+**macOS / Linux (Rider):**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/maisa92/copilot-companion/main/install.sh | bash
+```
+
+**Windows (Rider + Visual Studio, in PowerShell):**
+
+```powershell
+irm https://raw.githubusercontent.com/maisa92/copilot-companion/main/install.ps1 | iex
+```
+
+Restart the IDE afterwards.
+
+### Rider: plugin repository with auto-updates (recommended)
+
+In Rider: *Settings | Plugins | ⚙ | Manage Plugin Repositories…* → add:
+
+```
+https://raw.githubusercontent.com/maisa92/copilot-companion/main/updatePlugins.xml
+```
+
+Then search for **Copilot Companion** in the *Marketplace* tab of the Plugins page and
+install it like any other plugin — future releases show up as normal plugin updates.
+
+### Manual install
+
 Grab the latest artifacts from **[Releases](../../releases)**:
 
 | IDE | File | How to install |

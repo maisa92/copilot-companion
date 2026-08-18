@@ -52,9 +52,31 @@ jobs:
         with:
           merge-multiple: true
           path: dist
+      - name: Add stable-named zip for the install scripts
+        run: cp dist/copilot-companion-*.zip dist/copilot-companion.zip
       - uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/*.zip
             dist/*.vsix
           generate_release_notes: true
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: repo
+      - name: Update custom plugin repository (updatePlugins.xml)
+        working-directory: repo
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          sed -i -E \
+            -e "s|download/v[0-9.]+/copilot-companion-[0-9.]+\.zip|download/v${VERSION}/copilot-companion-${VERSION}.zip|" \
+            -e "s|version=\"[0-9.]+\"|version=\"${VERSION}\"|" \
+            updatePlugins.xml
+          if git diff --quiet; then
+            echo "updatePlugins.xml already up to date"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -am "Point updatePlugins.xml at ${GITHUB_REF_NAME}"
+            git push origin main
+          fi
