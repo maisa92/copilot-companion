@@ -1,6 +1,7 @@
 # Copilot Companion installer for Windows (Rider plugin + Visual Studio VSIX).
 #   irm https://raw.githubusercontent.com/maisa92/copilot-companion/main/install.ps1 | iex
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'  # much faster Invoke-WebRequest downloads
 
 $repo = 'maisa92/copilot-companion'
 $pluginDirName = 'copilot-companion'
@@ -20,6 +21,7 @@ try {
     $riderDirs = @(Get-ChildItem -Path (Join-Path $env:APPDATA 'JetBrains') -Directory -Filter 'Rider*' -ErrorAction SilentlyContinue)
     if ($riderDirs.Count -gt 0) {
         $zipPath = Join-Path $tmp 'copilot-companion.zip'
+        Write-Host 'Downloading the Rider plugin...'
         Invoke-WebRequest $zipUrl -OutFile $zipPath
         foreach ($riderDir in $riderDirs) {
             $plugins = Join-Path $riderDir.FullName 'plugins'
@@ -40,13 +42,17 @@ try {
         $vsixInstaller = & $vswhere -latest -prerelease -products * -find '**\VSIXInstaller.exe' | Select-Object -First 1
         if ($vsixInstaller) {
             $vsixPath = Join-Path $tmp 'CopilotCompanion.vsix'
+            Write-Host 'Downloading the Visual Studio extension...'
             Invoke-WebRequest $vsixUrl -OutFile $vsixPath
-            Write-Host 'Installing the Visual Studio extension (close Visual Studio if it is running)...'
-            $p = Start-Process -FilePath $vsixInstaller -ArgumentList "/quiet", "`"$vsixPath`"" -Wait -PassThru
+            Write-Host ''
+            Write-Host 'Opening the VSIX Installer window - click "Install" there.'
+            Write-Host '(If Visual Studio is running, close it first; the installer waits for it.)'
+            $p = Start-Process -FilePath $vsixInstaller -ArgumentList "`"$vsixPath`"" -Wait -PassThru
             if ($p.ExitCode -eq 0) {
                 Write-Host 'Visual Studio extension installed.'
             } else {
-                Write-Host "VSIXInstaller exited with code $($p.ExitCode). Try double-clicking the .vsix from https://github.com/$repo/releases instead."
+                Write-Host "VSIX Installer exited with code $($p.ExitCode) (1002 = cancelled/already installed)."
+                Write-Host "You can also install by double-clicking the .vsix from https://github.com/$repo/releases"
             }
         } else {
             Write-Host 'VSIXInstaller.exe not found (skipped). Double-click the .vsix from the Releases page instead.'
