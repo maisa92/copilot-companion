@@ -55,17 +55,26 @@ class ServeWebService(private val project: Project) : Disposable {
                     onError("VS Code CLI not found. Install VS Code from ${VsCodeCli.DOWNLOAD_URL}.")
                     return@executeOnPooledThread
                 }
-                process = ProcessBuilder(
-                    VsCodeCli.command(
-                        code, "serve-web",
-                        "--host", HOST,
-                        "--port", PORT.toString(),
-                        // Localhost-only + embedded browser: a connection token would just
-                        // break the iframe-style embedding.
-                        "--without-connection-token",
-                        "--accept-server-license-terms"
-                    )
-                ).redirectErrorStream(true).start()
+                val serveWeb = VsCodeCli.command(
+                    code, "serve-web",
+                    "--host", HOST,
+                    "--port", PORT.toString(),
+                    // Localhost-only + embedded browser: a connection token would just
+                    // break the iframe-style embedding.
+                    "--without-connection-token",
+                    "--accept-server-license-terms"
+                )
+                // On macOS/Linux, an IDE launched from the Dock/desktop has a minimal
+                // environment; run the server through a login shell so terminals, Copilot
+                // tools, and hooks inside it inherit the user's full PATH.
+                val command = if (com.intellij.openapi.util.SystemInfo.isWindows) {
+                    serveWeb
+                } else {
+                    val shell = System.getenv("SHELL")?.takeIf { it.isNotBlank() } ?: "/bin/zsh"
+                    val quoted = serveWeb.joinToString(" ") { "'" + it.replace("'", "'\\''") + "'" }
+                    listOf(shell, "-lc", "exec $quoted")
+                }
+                process = ProcessBuilder(command).redirectErrorStream(true).start()
 
                 // First launch downloads the VS Code server bundle — allow up to 90 s.
                 val deadline = System.currentTimeMillis() + 90_000

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.copilotcompanion"
-version = "1.5.9"
+version = "1.5.10"
 
 repositories {
     mavenCentral()
