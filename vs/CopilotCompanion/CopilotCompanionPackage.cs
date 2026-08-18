@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,7 +71,7 @@ namespace CopilotCompanion
             get
             {
                 ThreadHelper.ThrowIfNotOnUIThread();
-                return new IntPtr(Dte.MainWindow.HWnd);
+                return Dte.MainWindow.HWnd;
             }
         }
 
