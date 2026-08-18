@@ -70,7 +70,7 @@ jobs:
           VERSION="${GITHUB_REF_NAME#v}"
           sed -i -E \
             -e "s|download/v[0-9.]+/copilot-companion-[0-9.]+\.zip|download/v${VERSION}/copilot-companion-${VERSION}.zip|" \
-            -e "s|version=\"[0-9.]+\"|version=\"${VERSION}\"|" \
+            -e "/<\?xml/! s|version=\"[0-9.]+\"|version=\"${VERSION}\"|" \
             updatePlugins.xml
           if git diff --quiet; then
             echo "updatePlugins.xml already up to date"
