@@ -185,7 +185,6 @@ namespace CopilotCompanion.ToolWindows
             // Visual Studio documents whenever the user switches into the panel, so the
             // chat always works against their latest edits.
             _webView.GotFocus += OnPanelFocused;
-            _webView.CoreWebView2.GotFocus += (s, a) => OnPanelFocused(s, null);
             _webView.Source = new Uri(_url);
         }
 
