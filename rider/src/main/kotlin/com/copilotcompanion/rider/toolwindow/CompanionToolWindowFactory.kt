@@ -47,6 +47,21 @@ class CompanionToolWindowFactory : ToolWindowFactory, DumbAware {
         val browser = JBCefBrowser()
         Disposer.register(content, browser)
 
+        // The embedded VS Code only sees files as they exist on disk. Save all dirty
+        // Rider documents whenever focus moves into the panel, so the chat always
+        // works against the user's latest edits.
+        val focusManager = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager()
+        val focusListener = java.beans.PropertyChangeListener { evt ->
+            val owner = evt.newValue as? java.awt.Component ?: return@PropertyChangeListener
+            if (javax.swing.SwingUtilities.isDescendingFrom(owner, browser.component)) {
+                ApplicationManager.getApplication().invokeLater {
+                    com.intellij.openapi.fileEditor.FileDocumentManager.getInstance().saveAllDocuments()
+                }
+            }
+        }
+        focusManager.addPropertyChangeListener("focusOwner", focusListener)
+        Disposer.register(content) { focusManager.removePropertyChangeListener("focusOwner", focusListener) }
+
         val service = ServeWebService.getInstance(project)
         val consecutiveErrors = AtomicInteger(0)
 

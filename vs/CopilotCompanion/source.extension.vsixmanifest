@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="CopilotCompanion.VisualStudio.b7a2c0e4-6d5a-4e8b-9f1c-3d2e8a7b4c01" Version="1.5.10" Language="en-US" Publisher="CopilotCompanion" />
+    <Identity Id="CopilotCompanion.VisualStudio.b7a2c0e4-6d5a-4e8b-9f1c-3d2e8a7b4c01" Version="1.5.11" Language="en-US" Publisher="CopilotCompanion" />
     <DisplayName>Copilot Companion</DisplayName>
     <Description xml:space="preserve">Launches Visual Studio Code with GitHub Copilot Chat as a side-by-side AI companion window for the currently open solution, with window arrangement and active-file sync.</Description>
     <MoreInfo>https://code.visualstudio.com/download</MoreInfo>

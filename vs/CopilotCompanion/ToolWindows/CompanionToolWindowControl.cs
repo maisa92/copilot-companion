@@ -181,7 +181,29 @@ namespace CopilotCompanion.ToolWindows
             _package.Logger?.Log("WebView2 ready (runtime " + environment.BrowserVersionString + "); loading " + _url);
 
             _webView.CoreWebView2.NavigationCompleted += OnNavigationCompleted;
+            // The embedded VS Code only sees files as they exist on disk. Save all dirty
+            // Visual Studio documents whenever the user switches into the panel, so the
+            // chat always works against their latest edits.
+            _webView.GotFocus += OnPanelFocused;
+            _webView.CoreWebView2.GotFocus += (s, a) => OnPanelFocused(s, null);
             _webView.Source = new Uri(_url);
+        }
+
+        private void OnPanelFocused(object sender, RoutedEventArgs e)
+        {
+            _package.JoinableTaskFactory.RunAsync(async () =>
+            {
+                await _package.JoinableTaskFactory.SwitchToMainThreadAsync(_package.DisposalToken);
+                try
+                {
+                    _package.Dte?.Documents?.SaveAll();
+                }
+                catch (Exception ex)
+                {
+                    // Best effort — a locked or readonly document must not break the panel.
+                    _package.Logger?.LogError("SaveAll on companion focus", ex);
+                }
+            }).FileAndForget("CopilotCompanion/saveall");
         }
 
         private void OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
